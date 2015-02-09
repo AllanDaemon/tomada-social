@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load leaflet_tags %}
+
+{% leaflet_js plugins="forms" %}
+{% leaflet_css plugins="forms" %}
+
+{% block content %}
+{% leaflet_map "yourmap" %}
+	<form action="." method="post">{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit"/>
+	</form>
+{% endblock %}

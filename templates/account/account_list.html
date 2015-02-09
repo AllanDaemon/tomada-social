@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+	{% for account in account_list %}		
+		<div style="margin-bottom: 20px;">
+			<h4>{{ account.name }}</h4>
+			{{ account.username|linebreaks }}
+			<a href="{% url 'account-edit' account.id %}" class="btn btn-small">Edit</a> 
+			<a href="{% url 'account-delete' account.id %}" class="btn btn-small">Delete</a>
+		</div>
+	{% empty %}
+  		Não há eventos
+	{% endfor %}
+{% endblock %}

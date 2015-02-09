@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="post" action="{% url 'account-create' %}">
+    {% csrf_token %}
+        <ul>
+            <li>
+                <input type="text" name="name" placeholder="Nome" required>
+            </li>
+            <li>
+                <input type="text" name="username" placeholder="Usuario" required>
+            </li>
+            <li>
+                <input type="password" name="password" placeholder="Senha" required>
+            </li>
+            <li>
+                <input type="text" name="email" placeholder="Email" required>
+            </li>
+            <li>
+                <input type="submit" value="Salvar">
+            </li>
+        </ul>
+{% endblock %}

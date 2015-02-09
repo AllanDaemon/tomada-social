@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+	{% for evento in evento_list %}		
+		<div style="margin-bottom: 20px;">
+			<h4>{{ evento.titulo }}</h4>
+			{{ evento.descricao|linebreaks }}
+			<a href="{{ evento.get_absolute_url }}" class="btn btn-small">Read</a> 
+			<a href="{{ evento.get_edit_url }}" class="btn btn-small">Edit</a> 
+			<a href="{{ evento.get_delete_url }}" class="btn btn-small">Delete</a>
+		</div>
+	{% endfor %}
+{% endblock %}

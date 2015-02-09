@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="post" action="{% url 'event-edit' event.id %}">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{event.id}}">
+        <ul>
+            <li>
+                <input type="text" name="title" placeholder="Nome do evento" value="{{event.title}}" required>
+            </li>
+            <li>
+                <textarea name="description" placeholder="Descrição" rows=5 cols=50 required>{{event.description}}</textarea>
+            </li>
+            <li>
+                <input type="submit" value="Salvar">
+            </li>
+        </ul>
+{% endblock %}

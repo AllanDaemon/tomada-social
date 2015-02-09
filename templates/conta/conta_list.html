@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+	{% for conta in conta_list %}		
+		<div style="margin-bottom: 20px;">
+			<h4>{{ conta.nome }}</h4>
+			{{ conta.email|linebreaks }}
+			<a href="{{ conta.get_absolute_url }}" class="btn btn-small">Read</a> 
+			<a href="{{ conta.get_edit_url }}" class="btn btn-small">Edit</a> 
+			<a href="{{ conta.get_delete_url }}" class="btn btn-small">Delete</a>
+		</div>
+	{% endfor %}
+{% endblock %}
