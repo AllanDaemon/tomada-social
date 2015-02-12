@@ -71,10 +71,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'leaflet',
+    'account',
     'evento',
     'conta',
     'event',
-    'account',
 )
 
 MIDDLEWARE_CLASSES = (

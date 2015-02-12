@@ -5,6 +5,9 @@ from django.template import RequestContext
 from models import Event
 import datetime
 
+from lib.decorators import myuser_login_required
+
+@myuser_login_required
 def create(request):
     if request.method == 'POST':
         # save new evento
@@ -19,13 +22,14 @@ def create(request):
     return render_to_response('event/event_create.html',
                               context_instance=RequestContext(request))
 
-
+@myuser_login_required
 def list(request):
     # Get all events from DB
     events = Event.objects
     return render_to_response('event/event_list.html', {'event_list': events},
                               context_instance=RequestContext(request))
 
+@myuser_login_required
 def edit(request, event_id):
     event = get_document_or_404(Event, id=event_id)
     
@@ -45,7 +49,7 @@ def edit(request, event_id):
    
     return render_to_response(template, params, context_instance=RequestContext(request))
                               
-
+@myuser_login_required
 def delete(request, event_id):
     event = get_document_or_404(Event, id=event_id)
 

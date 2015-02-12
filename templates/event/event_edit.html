@@ -1,18 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form method="post" action="{% url 'event-edit' event.id %}">
-        {% csrf_token %}
+    <form role="form" method="post" action="{% url 'event-edit' event.id %}">
         <input type="hidden" name="id" value="{{event.id}}">
-        <ul>
-            <li>
-                <input type="text" name="title" placeholder="Nome do evento" value="{{event.title}}" required>
-            </li>
-            <li>
-                <textarea name="description" placeholder="Descrição" rows=5 cols=50 required>{{event.description}}</textarea>
-            </li>
-            <li>
-                <input type="submit" value="Salvar">
-            </li>
-        </ul>
+    {% csrf_token %}
+        <div class="form-group">
+            <label>Nome do evento</label>
+            <input type="text" name="title" class="form-control" placeholder="Nome do evento" value="{{event.title}}" required>
+        </div>
+
+         <div class="form-group">
+            <label>Descrição</label>
+            <textarea name="description" class="form-control" placeholder="Descrição" rows="3" required>{{event.description}}</textarea>
+        </div>
+
+        <div class="form-group">
+            <div id="map"></div>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">Editar evento</button>
+        </div>
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <style>
+#map { height: 180px; }
+    </style>
+{% endblock %}
+
+{% block script %}
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script type="text/javascript">
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    maxZoom: 18
+}).addTo(map);
+
+    </script>
 {% endblock %}

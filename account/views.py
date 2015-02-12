@@ -5,16 +5,7 @@ from django.template import RequestContext
 from models import Account
 from django.http import HttpResponseRedirect
 
-
-def myuser_login_required(f):
-        def wrap(request, *args, **kwargs):
-                #this check the session if userid key exist, if not it will redirect to login page
-                if 'userid' not in request.session.keys():
-                        return HttpResponseRedirect("/account/login")
-                return f(request, *args, **kwargs)
-        wrap.__doc__=f.__doc__
-        wrap.__name__=f.__name__
-        return wrap
+from lib.decorators import myuser_login_required
 
 @myuser_login_required
 def create(request):
@@ -35,12 +26,14 @@ def create(request):
     return render_to_response('account/account_create.html',
                               context_instance=RequestContext(request))
 
+@myuser_login_required
 def list(request):
     # Get all accounts from DB
     accounts = Account.objects
     return render_to_response('account/account_list.html', {'account_list': accounts},
                               context_instance=RequestContext(request))
 
+@myuser_login_required
 def edit(request, account_id):
     account = get_document_or_404(Account, pk=account_id)
     if request.method == 'POST':
@@ -60,6 +53,7 @@ def edit(request, account_id):
     return render_to_response(template, params, context_instance=RequestContext(request))
                               
 
+@myuser_login_required
 def delete(request, account_id):
     account = get_document_or_404(Account, id=account_id)
 
@@ -71,8 +65,7 @@ def delete(request, account_id):
 
 
 def login(request):
-    request.session['userid'] = 'teste'
-    if request.session.get('login'):
+    if request.session.get('userid'):
         return HttpResponseRedirect('/')
 
     if request.method == 'POST':
@@ -80,10 +73,17 @@ def login(request):
         username = request.POST['username']
         password = request.POST['password']
         usuario = Account.objects.filter(username=username, password=password)
-        if len(usuario)>0:
-            request.session['userid'] = str(usuario.objects.username)
-            return HttpResponseRedirect('/')
         
+        if len(usuario)>0:
+            request.session['userid'] = str(usuario[0].username)
+            return HttpResponseRedirect('/')
+        else:
+            return HttpResponseRedirect('/account/login/')
 
-    request.session['userid'] = False    
-    return HttpResponseRedirect('/conta/login/')
+    return render_to_response('account/account_login.html',
+                              context_instance=RequestContext(request))
+
+def logout(request):
+    if request.session.get('userid'):
+        del request.session['userid']
+    return HttpResponseRedirect('/account/login/')

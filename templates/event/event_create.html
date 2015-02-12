@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form method="post" action="{% url 'event-create' %}">
+    <form role="form" method="post" action="{% url 'event-create' %}">
     {% csrf_token %}
-        <ul>
-            <li>
-                <input type="text" name="title" placeholder="Nome do evento" required>
-            </li>
-            <li>
-                <textarea name="description" placeholder="Descrição" rows=5 cols=50 required></textarea>
-            </li>
-            <li>
-                <input type="submit" value="Salvar">
-            </li>
-        </ul>
+        <div class="form-group">
+            <label>Nome do evento</label>
+            <input type="text" name="title" class="form-control" placeholder="Nome do evento" required>
+        </div>
+
+         <div class="form-group">
+            <label>Descrição</label>
+            <textarea name="description" class="form-control" placeholder="Descrição" rows="3" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">Criar evento</button>
+        </div>
 {% endblock %}
