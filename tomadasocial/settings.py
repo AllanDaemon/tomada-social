@@ -129,4 +129,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 from mongoengine import connect
-connect('admin', username='admin', password='senha')
+connect("cc_bQWsNhAJvOH", host='mongodb://bQWsNhAJvOHi:NaPtSvgBNHaR@mongosoup-cont002.mongosoup.de:31904/cc_bQWsNhAJvOHi')

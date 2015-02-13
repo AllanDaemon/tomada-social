@@ -14,6 +14,31 @@
             <textarea name="description" class="form-control" placeholder="Descrição" rows="3" required>{{event.description}}</textarea>
         </div>
 
+        <div class="row">
+            <div class="container row">
+                <div class='col-md-5 col-xs-6 col-sm-5'>
+                    <div class="form-group">
+                        <label>Data Inicial</label>
+                        <div class='input-group date' id='date_start'>
+                            <input type='text' class="form-control" name="date_start" value="{{event.date_start}}" />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class='col-md-5 col-xs-6 col-sm-5'>
+                    <div class="form-group">
+                        <label>Data Final</label>
+                        <div class='input-group date' id='date_end'>
+                            <input type='text' class="form-control" name="date_end" value="{{event.date_end}}" />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="form-group">
             <div id="map"></div>
         </div>
@@ -24,6 +49,9 @@
 {% endblock %}
 
 {% block css %}
+
+    <link href="{{ STATIC_URL }}bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" rel="stylesheet">
+
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
     <style>
 #map { height: 180px; }
@@ -31,7 +59,26 @@
 {% endblock %}
 
 {% block script %}
+    <script type="text/javascript" src="{{ STATIC_URL }}moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script type="text/javascript">
+    $('#date_start').datetimepicker({
+        locale: 'pt-BR'
+    });
+    $('#date_end').datetimepicker({
+        locale: 'pt-BR'
+    });
+    $("#date_start").on("dp.change",function (e) {
+    $('#date_end').data("DateTimePicker").minDate(e.date);
+    });
+    $("#date_end").on("dp.change",function (e) {
+    $('#date_start').data("DateTimePicker").maxDate(e.date);
+    });
+    </script>
+
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
     <script type="text/javascript">
     var map = L.map('map').setView([51.505, -0.09], 13);
 
