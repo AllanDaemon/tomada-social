@@ -3,7 +3,7 @@ from django.conf import settings
 from evento.views import EventoHomeView
 
 urlpatterns = patterns('',
-    url(r'^$', EventoHomeView.as_view(), name='evento-home'),
+    url(r'^$', 'event.views.home', name='event-home'),
     url(r'^evento/', include('evento.urls')),
 	url(r'^conta/', include('conta.urls')),
     url(r'^event/', include('event.urls')),

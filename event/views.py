@@ -74,4 +74,9 @@ def delete(request, event_id):
 
     return render_to_response(template, params, context_instance=RequestContext(request))
                               
+@myuser_login_required
+def home(request):
+    return render_to_response('event/event_home.html',
+                              context_instance=RequestContext(request))
+                              
     
