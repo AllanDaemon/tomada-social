@@ -62,8 +62,12 @@
     <script type="text/javascript" src="{{ STATIC_URL }}bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 
     <script type="text/javascript">
-    $('#date_start').datetimepicker();
-    $('#date_end').datetimepicker();
+    $('#date_start').datetimepicker({
+        locale: 'pt-BR'
+    });
+    $('#date_end').datetimepicker({
+        locale: 'pt-BR'
+    });
     $("#date_start").on("dp.change",function (e) {
     $('#date_end').data("DateTimePicker").minDate(e.date);
     });
