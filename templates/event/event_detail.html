@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h2>{{event.title}}</h2>
+        <div class="page-header">
+            <div class="btn-group right" role="group">
+              <button type="button" class="btn btn-default">Ir</button>
+              <button type="button" class="btn btn-default">Talvez</button>
+              <button type="button" class="btn btn-default">Recusar</button>
+            </div>
+        </div>
+        <div>
+            <div>{{event.description|linebreaksbr}}</div>
+        </div>
+        <div id="map" class="col-lg-12"></div>
+    </div>
+{% endblock %}
+
+{% block css %}
+    {% include "event/event_css.html" %}
+{% endblock %}
+
+{% block script %}
+    {% include "event/event_js.html" %}
+    <script type="text/javascript">
+    {% if event.location %}
+        addMarker({lat:{{event.lat}}, lng:{{event.lng}}})
+    {% endif %}
+    </script>
+{% endblock %}

@@ -4,10 +4,11 @@ from mongoengine.django.shortcuts import get_document_or_404
 from django.template import RequestContext
 from models import Account
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
-from lib.decorators import myuser_login_required
+from lib.decorators import *
 
-@myuser_login_required
+@myuser_logout_required
 def create(request):
     if request.method == 'POST':
         # save new account
@@ -21,6 +22,7 @@ def create(request):
         account.username = username
         account.password = password
         account.email = email
+        account.perfil = 'N'
         account.save()
       
     return render_to_response('account/account_create.html',
@@ -29,9 +31,15 @@ def create(request):
 @myuser_login_required
 def list(request):
     # Get all accounts from DB
-    accounts = Account.objects
+    accounts = Account.objects()
     return render_to_response('account/account_list.html', {'account_list': accounts},
                               context_instance=RequestContext(request))
+
+@myuser_login_required
+def getUser(id):
+    # Get all accounts from DB
+    account = Account.objects(id=id)
+    return account
 
 @myuser_login_required
 def edit(request, account_id):
@@ -42,6 +50,7 @@ def edit(request, account_id):
         account.username = request.POST['username']
         account.password = request.POST['password']
         account.email = request.POST['email']
+        account.perfil = 'N'
         account.save()
         template = 'account/account_list.html'
         params = {'account_list': Account.objects} 
@@ -64,9 +73,10 @@ def delete(request, account_id):
     return render_to_response(template, params, context_instance=RequestContext(request))
 
 
+@myuser_logout_required
 def login(request):
     if request.session.get('userid'):
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(reverse('event-home'))
 
     if request.method == 'POST':
 
@@ -75,10 +85,10 @@ def login(request):
         usuario = Account.objects.filter(username=username, password=password)
         
         if len(usuario)>0:
-            request.session['userid'] = str(usuario[0].username)
-            return HttpResponseRedirect('/')
+            request.session['userid'] = usuario[0].id
+            return HttpResponseRedirect(reverse('event-home'))
         else:
-            return HttpResponseRedirect('/account/login/')
+            return HttpResponseRedirect(reverse('account-login'))
 
     return render_to_response('account/account_login.html',
                               context_instance=RequestContext(request))
@@ -86,4 +96,4 @@ def login(request):
 def logout(request):
     if request.session.get('userid'):
         del request.session['userid']
-    return HttpResponseRedirect('/account/login/')
+    return HttpResponseRedirect(reverse('account-login'))

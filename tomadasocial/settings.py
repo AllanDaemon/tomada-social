@@ -126,7 +126,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = '/static/'
-
 from mongoengine import connect
-connect("cc_bQWsNhAJvOH", host='mongodb://bQWsNhAJvOHi:NaPtSvgBNHaR@mongosoup-cont002.mongosoup.de:31904/cc_bQWsNhAJvOHi')
+# connect('admin', username='admin', password='senha')
+#connect("cc_bQWsNhAJvOH", host='mongodb://bQWsNhAJvOHi:NaPtSvgBNHaR@mongosoup-cont002.mongosoup.de:31904/cc_bQWsNhAJvOHi')
+connect("admin", host='mongodb://admin:senha@127.0.0.1:27017/admin')

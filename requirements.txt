@@ -1,7 +1,15 @@
+amqp==1.4.6
+anyjson==0.3.3
+billiard==3.3.0.19
+celery==3.1.17
+celery-with-mongodb==3.0
 Django==1.6
 django-leaflet==0.15.2
 gunicorn==19.2.1
 jsonfield==1.0.1
+kombu==3.0.24
 mongoengine==0.8.7
+Pillow==2.7.0
 pymongo==2.8
+pytz==2014.10
 six==1.9.0
