@@ -128,5 +128,5 @@ USE_TZ = True
 
 from mongoengine import connect
 # connect('admin', username='admin', password='senha')
-#connect("cc_bQWsNhAJvOH", host='mongodb://bQWsNhAJvOHi:NaPtSvgBNHaR@mongosoup-cont002.mongosoup.de:31904/cc_bQWsNhAJvOHi')
-connect("admin", host='mongodb://admin:senha@127.0.0.1:27017/admin')
+connect("cc_bQWsNhAJvOH", host='mongodb://bQWsNhAJvOHi:NaPtSvgBNHaR@mongosoup-cont002.mongosoup.de:31904/cc_bQWsNhAJvOHi')
+#connect("admin", host='mongodb://admin:senha@127.0.0.1:27017/admin')
