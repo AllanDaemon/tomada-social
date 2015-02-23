@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="tabbable">
+    <div class="tab-content">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+            {% for event in event_list %}       
+                    <tr>
+                        <td>{{ event.title }}</td>
+                        <td>{{ event.description|linebreaksbr }}</td>
+                    </tr>
+            {% empty %}
+                Não há eventos
+            {% endfor %}      
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+  

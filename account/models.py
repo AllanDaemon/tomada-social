@@ -1,8 +1,5 @@
 from mongoengine import *
 import mongoengine.fields
-#from blog.settings import DBNAME
-
-#connect(DBNAME)
 
 class Account(Document):
     PERFIL_CHOICES = (
@@ -16,4 +13,7 @@ class Account(Document):
     password = StringField(max_length=30)
     email = EmailField(max_length=50)
     perfil = StringField(max_length=1, choices=PERFIL_CHOICES)
+    event_going = ListField(GenericReferenceField())
+    event_maybe = ListField(GenericReferenceField())
+    event_invite = ListField(GenericReferenceField())
 

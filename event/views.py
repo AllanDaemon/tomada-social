@@ -10,7 +10,10 @@ import json
 from mongoengine.queryset import Q
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
-from models import Event, Account
+
+from models import Event
+from account.models import Account
+
 from PIL import Image
 import datetime
 
@@ -37,11 +40,16 @@ def create(request):
         else:
             event.date_end =  datetime.datetime.strptime(date_end, '%d/%m/%Y %H:%M')
         event.location =  [float(lat),float(lng)]
-        user = request.session.get('userid')
-        event.user = Account.objects(id=user)[0]
+        user_id = request.session.get('userid')
+        user = Account.objects(id=user_id)[0]
+
+        event.user = user
+        event.user_going = [user]
         #im = Image.open(image)
         #event.image.put(open(im))
         event.save()
+        Account.objects(id=user_id).update_one(push__event_going=event)
+
         return HttpResponseRedirect(reverse('event-list'))
 
     return render_to_response('event/event_create.html',
@@ -50,12 +58,11 @@ def create(request):
 @myuser_login_required
 def list(request):
     # Get all events from DB
-    id = request.session.get('userid')
-    user = Account.objects(id=id)[0]
+    user = Account.objects(id=request.session.get('userid'))[0]
     events = Event.objects(user=user)
     return render_to_response('event/event_list.html', {'event_list': events},
                               context_instance=RequestContext(request))
-@myuser_login_required
+
 def search(request):
     # Get all events from DB
     lat = request.GET['lat']
@@ -88,7 +95,8 @@ def search(request):
 
 @myuser_login_required
 def edit(request, event_id):
-    event = get_document_or_404(Event, id=event_id)
+    user = Account.objects(id=request.session.get('userid'))[0]
+    event = get_document_or_404(Event, id=event_id, user=user)
     
     if request.method == 'POST':
         # update field values and save to mongo
@@ -109,8 +117,7 @@ def edit(request, event_id):
         else:
             event.date_end =  datetime.datetime.strptime(date_end, '%d/%m/%Y %H:%M')
         event.location =  [float(lat),float(lng)]
-        user = request.session.get('userid')
-        event.user = Account.objects(id=user)[0]
+        event.user = user
         #event.image = request.FILES['image']
         event.save()
         
@@ -129,11 +136,14 @@ def edit(request, event_id):
    
     return render_to_response(template, params, context_instance=RequestContext(request))
 
-@myuser_login_required
 def detail(request, event_id):
     event = get_document_or_404(Event, id=event_id)
     
-    template = 'event/event_detail.html'
+    if request.session.get('userid'):
+        template = 'event/event_detail.html'
+    else:
+        template = 'event/event_detail_nologin.html'
+
     if event.date_start:
         event.date_start = event.date_start.strftime('%d/%m/%Y %H:%M') 
     if event.date_end:
@@ -147,16 +157,62 @@ def detail(request, event_id):
                               
 @myuser_login_required
 def delete(request, event_id):
-    event = get_document_or_404(Event, id=event_id)
+    user_id = request.session.get('userid')
+    user = Account.objects(id=user_id)[0]
+    event = get_document_or_404(Event, id=event_id, user=user)
+
+    Account.objects().update(pull__event_going=event)
+    Account.objects().update(pull__event_maybe=event)
 
     event.delete() 
-    template = 'event/event_list.html'
-    params = {'event_list': Event.objects} 
-
-    return render_to_response(template, params, context_instance=RequestContext(request))
-                              
-@myuser_login_required
+    return HttpResponseRedirect(reverse('event-list'))
+                      
 def home(request):
-    return render_to_response('event/event_home.html',
+    user_id = request.session.get('userid')
+
+    if(user_id):
+        return render_to_response('event/event_home.html',
                               context_instance=RequestContext(request))
-                              
+    
+    return render_to_response('event/event_home_nologin.html',
+                              context_instance=RequestContext(request))
+
+@myuser_login_required
+def join(request, event_id):
+    event = get_document_or_404(Event, id=event_id)
+    user_id = request.session.get('userid')
+    user = Account.objects(id=user_id)[0]
+
+    action = request.POST['action']
+    if action == 'going':
+        Account.objects(id=user_id).update_one(push__event_going=event)
+        Account.objects(id=user_id).update_one(pull__event_maybe=event)
+
+        Event.objects(id=event_id).update_one(push__user_going=user)
+        Event.objects(id=event_id).update_one(pull__user_maybe=user)
+    elif action == 'maybe':
+        Account.objects(id=user_id).update_one(push__event_maybe=event)
+        Account.objects(id=user_id).update_one(pull__event_going=event)
+
+        Event.objects(id=event_id).update_one(push__user_maybe=user)
+        Event.objects(id=event_id).update_one(pull__user_going=user)
+
+    elif action == 'decline':
+        Account.objects(id=user_id).update_one(pull__event_maybe=event)
+        Account.objects(id=user_id).update_one(pull__event_going=event)
+
+        Event.objects(id=event_id).update_one(pull__user_maybe=user)
+        Event.objects(id=event_id).update_one(pull__user_going=user)
+
+    Account.objects(id=user_id).update_one(pull__event_invite=event)
+
+    Event.objects(id=event_id).update_one(pull__user_invite=user)
+    
+    data = json.dumps({'sucess':'ok'})
+    return HttpResponse(data,content_type='application/json')
+
+def eventGoing(request):
+    user = Account.objects(id=request.session.get('userid'))[0]
+    events = Event.objects(user_going__in=[user])
+    return render_to_response('event/event_list_readonly.html', {'event_list': events},
+                              context_instance=RequestContext(request))

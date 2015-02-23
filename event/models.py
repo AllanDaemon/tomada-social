@@ -1,6 +1,5 @@
 from mongoengine import *
 import mongoengine.fields
-from account.models import Account
 #from blog.settings import DBNAME
 
 #connect(DBNAME)
@@ -13,6 +12,9 @@ class Event(Document):
     date_end = DateTimeField()
     location = GeoPointField()
     image = ImageField()
-    user = ReferenceField(Account)
+    user = GenericReferenceField()
+    user_going = ListField(GenericReferenceField())
+    user_maybe = ListField(GenericReferenceField())
+    user_invite = ListField(GenericReferenceField())
     #date_start = DateTimeField(required=True)
     #date_end = DateTimeField(required=True)

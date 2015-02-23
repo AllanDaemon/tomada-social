@@ -4,10 +4,10 @@
     <div class="col-lg-12">
         <h2>{{event.title}}</h2>
         <div class="page-header">
-            <div class="btn-group right" role="group">
-              <button type="button" class="btn btn-default">Ir</button>
-              <button type="button" class="btn btn-default">Talvez</button>
-              <button type="button" class="btn btn-default">Recusar</button>
+            <div class="btn-group right btn-group-action-event" role="group">
+              <button type="button" class="btn btn-default" data-action="going">Ir</button>
+              <button type="button" class="btn btn-default" data-action="maybe">Talvez</button>
+              <button type="button" class="btn btn-default" data-action="decline">Recusar</button>
             </div>
         </div>
         <div>
@@ -27,5 +27,20 @@
     {% if event.location %}
         addMarker({lat:{{event.lat}}, lng:{{event.lng}}})
     {% endif %}
+
+    $('.btn-group-action-event button').on('click', function(e) {
+        data = {
+            action: $(this).attr('data-action'),            
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        }
+        $.ajax({
+            type: 'POST',
+            data: data,
+            url: '/event/{{event.id}}/join/',
+            dataType: 'json',
+            success: function(json) {
+            }
+        });
+    });
     </script>
 {% endblock %}

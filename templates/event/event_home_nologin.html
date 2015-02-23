@@ -1,0 +1,21 @@
+{% extends "base_nologin.html" %}
+
+{% block script %}
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}leaflet.contextmenu.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}home.js"></script>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+<link href="{{ STATIC_URL }}leaflet.contextmenu.css" rel="stylesheet">
+<link href="{{ STATIC_URL }}home.css" rel="stylesheet">
+<style>
+    #map { height: 300px; }
+</style>
+{% endblock %}
+
+{% block content %}
+    <nav id="nav" class="navbar nav-date"></nav>
+    <div id="map" class="col-lg-12"></div>
+{% endblock %}

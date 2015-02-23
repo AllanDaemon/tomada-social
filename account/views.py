@@ -3,8 +3,9 @@ from mongoengine.django.shortcuts import get_document_or_404
 
 from django.template import RequestContext
 from models import Account
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.core.urlresolvers import reverse
+
 
 from lib.decorators import *
 
@@ -25,8 +26,11 @@ def create(request):
         account.perfil = 'N'
         account.save()
       
+        return HttpResponseRedirect(reverse('account-login'))
+    
     return render_to_response('account/account_create.html',
                               context_instance=RequestContext(request))
+    
 
 @myuser_login_required
 def list(request):
@@ -43,7 +47,10 @@ def getUser(id):
 
 @myuser_login_required
 def edit(request, account_id):
-    account = get_document_or_404(Account, pk=account_id)
+    if str(request.session.get('userid')) != str(account_id):
+        return HttpResponse('Acesso Negado')
+
+    account = get_document_or_404(Account, id=account_id)
     if request.method == 'POST':
         # update field values and save to mongo
         account.name = request.POST['name']
